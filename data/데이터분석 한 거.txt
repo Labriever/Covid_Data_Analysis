@@ -1,0 +1,75 @@
+1. Selenium과 BeautifulSoup를 이용하여 총 만 개의 블로그 데이터를 크롤링하여 데이터 학습에 이용하였다.
+
+2. 코로나 백신이 정말 효과적인지에 대한 논문을 찾아보았다.
+
+3. Our World in Data에서 제공한 한국의 백신 접종 현황 데이터와 질병관리청에서 제공한 한국의 코로나 사망률을 대조하여 백신 접종과 한국의 코로나 사망률에 대한 상관관계를 분석하였다.(백신의 효과성 입증)
+
+4. 후기에서 평가하는 코로나 백신이 긍정적인지 부정적인지 분석하였다.
+
+	4-1. TextRank(텍스트랭크) 라이브러리를 통해 Context를 요약하고 전처리 진행
+	     - sumy 라이브러리 설치: 자연어를 벡터로 변환하는데 필요한 대부분의 편의기능을 제공하고 있는 라이브러리 
+
+	4-2. emoji 텍스트를 통해 이모지 제거 # from emoju import core
+	4-3. 데이터 전처리 후 토픽 모델링 진행
+
+5. 분석법
+	5-1. 파파고 API를 통해 영어 번역 -> 분석
+	5-2. 한글로 바로 분석(토픽 모델링)
+	5-3. 
+
+
+
+1. 데이터 분석 시 뉴스의 데이터와 블로그 단어가 비슷한 지 확인하는 방법
+2. 
+
+
+-----------------------
+
+# 요약 -> 데이터 길이 비슷하게 -> 단어 갯수 맞추기 -> LSTM 사용 -> 비지도 학습
+
+
+1. 후기들을 감성 분석함
+1-1) 감성 사전을 이용하여 감성 분석함
+1-2) 다른 방법 이용해서 감성 분석함
+
+
+2. 뉴스와 후기 간 유사도 측정
+2-1) 토픽 분포 비교해서 유사도 측정
+2-2) 다른 방법 이용해서 유사도 측정
+
+
+
+
+from gensim import corpora, models, similarities
+from sklearn.metrics.pairwise import cosine_similarity
+
+# 전처리된 문서 리스트
+doc_list1 = ["문서 1의 내용", "문서 2의 내용", ...]
+doc_list2 = ["문서 3의 내용", "문서 4의 내용", ...]
+
+# 토큰화와 전처리
+tokenized_docs1 = [doc.split() for doc in doc_list1]
+tokenized_docs2 = [doc.split() for doc in doc_list2]
+
+# 사전 구축
+dictionary = corpora.Dictionary(tokenized_docs1 + tokenized_docs2)
+
+# 문서-단어 행렬 생성
+citizen_corpus = [contents_dictionary.doc2bow(doc) for doc in tokenized_docs1]
+news_corpus = [contents_dictionary.doc2bow(doc) for doc in tokenized_docs2]
+
+# LDA 모델 훈련
+lda_model1 = models.LdaModel(corpus1, num_topics=10)
+lda_model2 = models.LdaModel(corpus2, num_topics=10)
+
+# 토픽 분포 추출
+topic_dist1 = citizen_model[citizen_corpus]
+topic_dist2 = news_model[news_corpus]
+
+# 코사인 유사도 계산
+similarity_matrix = cosine_similarity(topic_dist1, topic_dist2)
+
+# 리스트 간 유사도 출력
+for i, sims in enumerate(similarity_matrix):
+    for j, sim in enumerate(sims):
+        print(f"리스트 {i+1}과(와) 리스트 {j+1}의 유사도: {sim}")
